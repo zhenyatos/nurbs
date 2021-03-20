@@ -19,14 +19,11 @@ class NURBSpline:
     def recalc_knots(self, points: t.List):
         n_halves = len(points) - self.degree - 1
         self.__knots = \
-            [0] * (self.degree + 1) + [0.5] * n_halves + [1] * (self.degree + 1)
-
+            [0] * (self.degree + 1) + [0.5] * n_halves + [1] * (self.degree + 1 + 1)
 
     def f(self, i, n, t):
-        return t
-
-        #denum = self.__knots[i + n] - self.__knots[i]
-        #return (t - self.__knots[i]) / (denum if fabs(denum) > 1e-6 else 1)
+        denum = self.__knots[i + n] - self.__knots[i]
+        return (t - self.__knots[i]) / denum if fabs(denum) > 1e-6 else 0
 
     def g(self, i, n, t):
         return 1 - self.f(i, n, t)
@@ -45,15 +42,16 @@ class NURBSpline:
         # i
         basis = [[0] * (self.degree + 1)] * (num_ctrl_pts + self.degree + 1)
 
-        for i in range(0, num_ctrl_pts + 1):
+        for i in range(0, num_ctrl_pts + self.degree):
+            # max(0, i - 1)
+            # min(i + self.degree, len(self.__knots) - 1)
             basis[i][0] = 1 \
-                if self.__knots[max(0, i - 1)] <= t <=\
-                   self.__knots[min(i + self.degree, len(self.__knots) - 1)] \
-                else \
-                	0
+                if self.__knots[i - 1] <= t <= \
+                   self.__knots[i + 0] \
+                else 0
 
         for n in range(1, self.degree + 1):
-            for i in range(n + num_ctrl_pts - 1, 0, -1):
+            for i in range(self.degree + 1 - n + num_ctrl_pts - 1, 0, -1):
                 basis[i][n] = \
                     self.f(i, n, t) * basis[i][n - 1] + \
                     self.g(i + 1, n, t) * basis[i + 1][n - 1]
@@ -61,12 +59,14 @@ class NURBSpline:
         return basis[k][self.degree]
 
     def recalc(self, ctrl_points: t.List) -> t.Union[t.List, None]:
+        num_ctrl_pts = len(ctrl_points)
+        if num_ctrl_pts < self.degree + 1:
+            return None
         # points are sorted by x btw, don't worry
         self.recalc_knots(ctrl_points)
 
         points = []
-        num_ctrl_pts = len(ctrl_points)
-        for t in np.linspace(0, 1, 10):
+        for t in np.linspace(0, 1, 50):
             pt = np.asarray([0, 0], dtype=float)
             for i in range(0, num_ctrl_pts):
                 basis = self.get_basis(i, t, num_ctrl_pts)
