@@ -40,19 +40,19 @@ class NURBSpline:
         # i + n
         # V
         # i
-        basis = [[0] * (self.degree + 1)] * (num_ctrl_pts + self.degree + 1)
+        basis = np.zeros((num_ctrl_pts + self.degree + 1, self.degree + 1))
 
-        for i in range(0, num_ctrl_pts + self.degree):
+        for i in range(1, num_ctrl_pts + self.degree):
             # max(0, i - 1)
             # min(i + self.degree, len(self.__knots) - 1)
-            basis[i][0] = 1 \
+            basis[i, 0] = 1 \
                 if self.__knots[i - 1] <= t <= \
                    self.__knots[i + 0] \
                 else 0
 
         for n in range(1, self.degree + 1):
             for i in range(self.degree + 1 - n + num_ctrl_pts - 1, 0, -1):
-                basis[i][n] = \
+                basis[i, n] = \
                     self.f(i, n, t) * basis[i][n - 1] + \
                     self.g(i + 1, n, t) * basis[i + 1][n - 1]
 
