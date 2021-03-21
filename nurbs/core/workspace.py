@@ -129,9 +129,11 @@ class Workspace:
 	def on_mouse_button_up(self, button: int) -> None:
 		if button == 4:
 			self.__nurbspline.degree = min(const.BSPLINE_DEGREE_MAX, self.__nurbspline.degree + 1)
+			self.__recalc_spline()
 			return
 		if button == 5:
 			self.__nurbspline.degree = max(const.BSPLINE_DEGREE_MIN, self.__nurbspline.degree - 1)
+			self.__recalc_spline()
 			return
 		if not self.__is_mouse_on_grid():
 			self.__point_drag = False
