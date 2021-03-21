@@ -36,6 +36,7 @@ class Workspace:
 		# updatable info
 		self.__pos_mouse = [-1, -1]
 		self.__points = []
+		self.__inv_points = []
 		self.__point_curr = None
 		self.__point_drag = False
 		self.__point_add = False
@@ -67,7 +68,8 @@ class Workspace:
 	def draw(self, surf: pg.Surface) -> None:
 		self.__surf_work.blit(self.__surf_grid, (0, 0))
 		if self.__curve:
-			pg.draw.aalines(self.__surf_work, const.COLOR_BLACK, closed=False, points=self.__curve)
+			pg.draw.aalines(self.__surf_work, const.COLOR_GREEN, closed=False, points=self.__curve)
+			pg.draw.aalines(self.__surf_work, const.COLOR_BLACK, closed=False, points=self.__inv_points)
 		for i in range(len(self.__points)):
 			if self.__point_curr != self.__points[i]:
 				color = const.COLOR_BLUE
@@ -101,9 +103,11 @@ class Workspace:
 			self.__point_drag = False
 			return
 		if self.__point_drag:
+			idx = self.__inv_points.index((self.__point_curr[0], self.__size[1] - self.__point_curr[1]))
 			self.__point_curr[0] = self.__pos_mouse[0]
 			self.__point_curr[1] = self.__pos_mouse[1]
-			self.__points.sort(key=lambda point: point[0])
+			self.__inv_points[idx] = (self.__point_curr[0], self.__size[1] - self.__point_curr[1])
+			#self.__points.sort(key=lambda point: point[0])
 			self.__recalc_spline()
 		else:
 			self.__set_point_curr()
@@ -135,14 +139,17 @@ class Workspace:
 		if button == 1:
 			if not self.__point_drag and self.__point_add:
 				if len(self.__points) < const.WORKSPACE_POINTS_MAX:
-					self.__points.append(self.__pos_mouse.copy())
-					self.__points.sort(key=lambda point: point[0])
+					mouse_pt = self.__pos_mouse.copy()
+					self.__points.append(mouse_pt)
+					self.__inv_points.append((mouse_pt[0], self.__size[1] - mouse_pt[1]))
+					#self.__points.sort(key=lambda point: point[0])
 					self.__recalc_spline()
 				self.__point_add = False
 			self.__point_drag = False
 		elif button == 3:
 			if self.__point_curr and self.__point_rem:
 				self.__points.remove(self.__point_curr)
+				self.__inv_points.remove((self.__point_curr[0], self.__size[1] - self.__point_curr[1]))
 				self.__recalc_spline()
 			self.__point_rem = False
 			self.__point_drag = False
