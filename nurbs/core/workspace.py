@@ -67,9 +67,10 @@ class Workspace:
 
 	def draw(self, surf: pg.Surface) -> None:
 		self.__surf_work.blit(self.__surf_grid, (0, 0))
+		if len(self.__inv_points) >= 2:
+			pg.draw.aalines(self.__surf_work, const.COLOR_LIGHT_GRAY, closed=False, points=self.__inv_points)
 		if self.__curve is not None:
-			pg.draw.aalines(self.__surf_work, const.COLOR_GREEN, closed=False, points=self.__curve)
-			pg.draw.aalines(self.__surf_work, const.COLOR_BLACK, closed=False, points=self.__inv_points)
+			pg.draw.aalines(self.__surf_work, const.COLOR_RED, closed=False, points=self.__curve, blend=2)
 		for i in range(len(self.__points)):
 			if self.__point_curr != self.__points[i]:
 				color = const.COLOR_BLUE

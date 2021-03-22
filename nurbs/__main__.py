@@ -36,8 +36,8 @@ def main():
 	workspace = core.Workspace(
 		const.WORKSPACE_SIZE_X, 
 		const.WORKSPACE_SIZE_Y, (
-		(__canvas.get_size()[0] - const.WORKSPACE_SIZE_X) // 2, 
-		(__canvas.get_size()[1] - const.WORKSPACE_SIZE_Y) // 2))
+		__canvas.get_size()[0] - const.WORKSPACE_SIZE_X,
+		__canvas.get_size()[1] - const.WORKSPACE_SIZE_Y))
 	canvas_font = pg.font.SysFont(const.CANVAS_FONT['style'], const.CANVAS_FONT['size'])
 
 	run = True
