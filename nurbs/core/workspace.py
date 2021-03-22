@@ -61,13 +61,13 @@ class Workspace:
 
 	def __recalc_spline(self) -> None:
 		self.__curve = self.__nurbspline.recalc(self.__points)
-		if self.__curve:
+		if self.__curve is not None:
 			for i in range(len(self.__curve)):
 				self.__curve[i][1] = self.__size[1] - self.__curve[i][1]
 
 	def draw(self, surf: pg.Surface) -> None:
 		self.__surf_work.blit(self.__surf_grid, (0, 0))
-		if self.__curve:
+		if self.__curve is not None:
 			pg.draw.aalines(self.__surf_work, const.COLOR_GREEN, closed=False, points=self.__curve)
 			pg.draw.aalines(self.__surf_work, const.COLOR_BLACK, closed=False, points=self.__inv_points)
 		for i in range(len(self.__points)):
