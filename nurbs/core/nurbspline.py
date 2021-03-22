@@ -7,7 +7,7 @@ from nurbs.const import FLOAT_PRECISION, N_DISCR_CURVE
 class NURBSpline:
     def __init__(self, degree: int):
         self.__degree = degree
-        self.__knots = []
+        self.__knots = np.asarray([])
         self.__basis = np.asarray([])
 
     @property
@@ -84,7 +84,7 @@ class NURBSpline:
         if num_ctrl_pts < self.degree + 1:
             return None
         # points are sorted by x btw, don't worry
-        self.recalc_knots(ctrl_points)
+        self.recalc_knots(num_ctrl_pts)
 
         points = []
         for t in np.linspace(self.__knots[0], self.__knots[-1], N_DISCR_CURVE):
