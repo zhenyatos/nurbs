@@ -3,6 +3,7 @@
 ## Requirements
 - [*python*](https://www.python.org/downloads/) >= 3.6
 - [*pygame*](https://www.pygame.org)
+- [*numpy*](https://numpy.org/)
 
 ## Launch
 - from root:
