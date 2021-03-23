@@ -52,6 +52,7 @@ def main():
 	hints_size = (max([len(hint) for hint in hints]) * canvas_font_w, len(hints) * canvas_font_h)
 	hints_surf = pg.Surface(hints_size).convert()
 	hints_surf.fill(const.COLOR_CANVAS)
+	hints_surf.set_colorkey(const.COLOR_CANVAS)
 	for i in range(len(hints)):
 		hints_surf.blit(canvas_font.render(hints[i], True, const.CANVAS_FONT['color']), (0, canvas_font_h * i))
 
@@ -60,7 +61,6 @@ def main():
 	mouse_button_down = 0
 	while run:
 		__canvas.fill(const.COLOR_CANVAS)
-		__canvas.blit(hints_surf, (canvas_size[0] - hints_size[0] - const.CANVAS_FONT['indent'], const.CANVAS_FONT['indent']))
 		# __canvas.blit(canvas_font.render('lbutton click: add point', True, const.CANVAS_FONT['color']),
 		# 	(const.CANVAS_FONT['indent'], 0))
 		# __canvas.blit(canvas_font.render('lbutton hold: drag point', True, const.CANVAS_FONT['color']),
@@ -91,6 +91,7 @@ def main():
 			mouse_button_up = 0
 
 		workspace.draw(__canvas)
+		__canvas.blit(hints_surf, (canvas_size[0] - hints_size[0] - const.CANVAS_FONT['indent'], const.CANVAS_FONT['indent']))
 		__screen.blit(__canvas, (0, 0))
 		pg.display.update()
 		__clocks.tick(const.PG_FPS)
